@@ -16,6 +16,8 @@ fn main() {
         Err(e) => println!("Error registering: {:?}", e),
     });
     loop {
-        service.process_result();
+        if service.has_data() {
+            service.process_result();
+        }
     }
 }

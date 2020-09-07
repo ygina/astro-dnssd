@@ -30,10 +30,9 @@ fn main() {
         Err(e) => error!("Error: {:?}", e),
     });
     loop {
-        // if browser.has_data() {
-        //     println!("Has data!");
-        browser.process_result();
-        // }
+        if browser.has_data() {
+            browser.process_result();
+        }
     }
 
     // thread::sleep(Duration::from_secs(10));

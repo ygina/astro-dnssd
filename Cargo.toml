@@ -12,6 +12,7 @@ edition = "2018"
 
 [dependencies]
 log = "0.4.8"
+libc = "0.2"
 
 [build-dependencies]
 pkg-config = "0.3.9"
