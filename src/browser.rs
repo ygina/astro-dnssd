@@ -109,8 +109,11 @@ impl Service {
                 Some(Self::resolve_callback),
                 mut_void_ptr!(&mut pending_resolution),
             );
+            let fd = ffi::DNSServiceRefSockFD(sdref);
             while pending_resolution.more_coming {
-                ffi::DNSServiceProcessResult(sdref);
+                if self.has_data(fd) {
+                    ffi::DNSServiceProcessResult(sdref);
+                }
             }
             ffi::DNSServiceRefDeallocate(sdref);
         }
@@ -182,6 +185,18 @@ impl Service {
             Err(e) => {
                 error!("Error resolving service: {:?}", e);
             }
+        }
+    }
+
+    /// returns true if the socket has data and process_result() should be called
+    pub fn has_data(&self, fd: i32) -> bool {
+        unsafe {
+            let mut timeout = libc::timeval { tv_sec: 5, tv_usec: 0 };
+            let mut read_set = mem::uninitialized();
+            libc::FD_ZERO(&mut read_set);
+            libc::FD_SET(fd, &mut read_set);
+            libc::select(fd + 1, &mut read_set, ptr::null_mut(), ptr::null_mut(), &mut timeout);
+            libc::FD_ISSET(fd, &mut read_set)
         }
     }
 }
