@@ -192,6 +192,7 @@ impl Service {
     pub fn has_data(&self, fd: i32) -> bool {
         unsafe {
             let mut timeout = libc::timeval { tv_sec: 5, tv_usec: 0 };
+            #[allow(deprecated)]
             let mut read_set = mem::uninitialized();
             libc::FD_ZERO(&mut read_set);
             libc::FD_SET(fd, &mut read_set);
@@ -408,6 +409,7 @@ impl DNSServiceBrowser {
         unsafe {
             let fd = self.socket();
             let mut timeout = libc::timeval { tv_sec: 5, tv_usec: 0 };
+            #[allow(deprecated)]
             let mut read_set = mem::uninitialized();
             libc::FD_ZERO(&mut read_set);
             libc::FD_SET(fd, &mut read_set);
